@@ -1,11 +1,12 @@
+import Isotope from "isotope-layout";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import ListGif from "./ListGif";
+import Gif from "./Gif";
 import SearchForm from "./SearchForm";
 
 const KEY = "y552Ig0rBsEWCcvr10kYKLiEkmyHutLT";
 const SEARCH_API =
-    "https://api.giphy.com/v1/gifs/search?limit=1&api_key=" + KEY;
+    "https://api.giphy.com/v1/gifs/search?&limit=5&api_key=" + KEY;
 
 class GiphyApp extends Component {
     initState = {
@@ -17,6 +18,16 @@ class GiphyApp extends Component {
 
     state = this.initState;
 
+    initIsotope = (el) => {
+        this.isotope = new Isotope(el, {
+            itemSelector: ".gif",
+            masonry: {
+                columnWidth: ".grid-sizer",
+                gutter: ".grid-gutter",
+            },
+        });
+    };
+
     handleChange = (e) => this.setState({ query: e.target.value });
 
     handleClear = () => {
@@ -26,7 +37,7 @@ class GiphyApp extends Component {
 
     fetchGif = (query) => {
         const newHistory = { ...this.state.history };
-        newHistory[query] = newHistory[query] + 1 || 0;
+        newHistory[query] = newHistory[query] + 25 || 0;
 
         let offset = newHistory[query];
 
@@ -34,27 +45,47 @@ class GiphyApp extends Component {
             .then((res) => res.json())
             .then((res) => {
                 if (res.data.length > 0) {
-                    const data = res.data[0];
+                    const promises = [];
 
-                    const newGifs = [
-                        ...this.state.gifs,
-                        { id: data.id, img: data.images.original },
-                    ];
+                    const gifs = res.data
+                        .map((gif) => {
+                            return { id: gif.id, img: gif.images.original };
+                        })
+                        .map((gif) => (
+                            <Gif
+                                key={gif.id}
+                                img={gif.img}
+                                addPromise={(p) => promises.push(p)}
+                            />
+                        ));
+
+                    const newGifs = [...this.state.gifs, ...gifs];
 
                     this.setState({
                         gifs: newGifs,
                         history: newHistory,
                         msg: this.initState.msg,
                         query: this.initState.query,
+                        fetched: true,
+                    });
+
+                    Promise.allSettled(promises).then((gifs) => {
+                        console.log("All loaded");
+                        this.isotope.arrange();
+
+                        gifs.forEach(({ value }) =>
+                            value.classList.add("loaded")
+                        );
                     });
                 } else {
                     this.setState({
                         msg: `No result for: '${query}'`,
                         query: this.initState.query,
+                        fetched: false,
                     });
                 }
 
-                this.search.focus();
+                this.searchRef.focus();
             })
             .catch(console.log);
     };
@@ -68,7 +99,7 @@ class GiphyApp extends Component {
             .toLowerCase();
 
         if (query.length == 0) {
-            this.search.focus();
+            this.searchRef.focus();
             return;
         }
 
@@ -76,7 +107,12 @@ class GiphyApp extends Component {
     };
 
     componentDidMount = () => {
-        this.search.focus();
+        this.initIsotope(this.gridRef);
+        this.searchRef.focus();
+    };
+
+    componentDidUpdate = () => {
+        this.isotope.reloadItems();
     };
 
     render() {
@@ -92,7 +128,7 @@ class GiphyApp extends Component {
                             handleClear={this.handleClear}
                             msg={this.state.msg}
                             value={this.state.query}
-                            searchRef={(el) => (this.search = el)}
+                            searchRef={(el) => (this.searchRef = el)}
                             history={this.state.history}
                             fetchGif={this.fetchGif}
                         />
@@ -100,7 +136,14 @@ class GiphyApp extends Component {
                 </header>
 
                 <div className="container">
-                    <ListGif gifs={this.state.gifs} />
+                    <div
+                        className="list-gifs"
+                        ref={(el) => (this.gridRef = el)}
+                    >
+                        <div className="grid-sizer"></div>
+                        <div className="grid-gutter"></div>
+                        {this.state.gifs}
+                    </div>
                 </div>
             </>
         );

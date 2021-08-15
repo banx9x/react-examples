@@ -126,6 +126,11 @@ button {
     margin-bottom: 10px;
     border-radius: 6px;
     overflow: hidden;
+    transform: scale(0);
+}
+
+.gif.loaded {
+    transform: scale(1);
 }
 
 .grid-gutter {

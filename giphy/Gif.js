@@ -1,16 +1,28 @@
 import React from "react";
 
-const Gif = (props) => {
-    return (
-        <div ref={props.newRef} className="gif">
-            <img
-                className="gif-image"
-                src={props.img.url}
-                alt={props.img.title}
-                onLoad={props.newRef ? props.setGridHeight : null}
-            />
-        </div>
-    );
-};
+class Gif extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.props.addPromise(
+            new Promise((resolve, reject) => {
+                this.loaded = resolve;
+            })
+        );
+    }
+
+    render() {
+        return (
+            <div className="gif" ref={(el) => (this.gif = el)}>
+                <img
+                    onLoad={() => this.loaded(this.gif)}
+                    className="gif-image"
+                    src={this.props.img.url}
+                    alt={this.props.img.title}
+                />
+            </div>
+        );
+    }
+}
 
 export default Gif;
