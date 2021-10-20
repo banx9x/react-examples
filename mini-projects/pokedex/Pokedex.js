@@ -5,9 +5,9 @@ class Pokecard extends React.Component {
         let { name, type, image } = this.props;
 
         return (
-            <div className="poke-card">
-                <h3 className="poke-name">{name}</h3>
-                <img className="poke-image" src={image} alt={name} />
+            <div className="pokecard">
+                <h3 className="pokename">{name}</h3>
+                <img className="pokeimage" src={image} alt={name} />
                 <p className="type">Type: {type}</p>
             </div>
         );
@@ -22,7 +22,12 @@ class Pokedex extends React.Component {
             <Pokecard key={pokemon.id} {...pokemon} />
         ));
 
-        return <div className="poke-dex">{pokeCards}</div>;
+        return (
+            <div className="container">
+                <h1 className="heading">PokeDex</h1>
+                <div className="pokedex">{pokeCards}</div>;
+            </div>
+        );
     }
 }
 
