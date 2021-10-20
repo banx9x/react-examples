@@ -1,4 +1,4 @@
-const LikeButton = ({ id, status, handleLike }) => {
+const LikeButton = ({ id, status, likePicture }) => {
     const icon = status ? (
         <i className="bi bi-heart-fill" />
     ) : (
@@ -6,21 +6,21 @@ const LikeButton = ({ id, status, handleLike }) => {
     );
 
     return (
-        <button onClick={() => handleLike(id)} className="btn btn-like">
+        <button onClick={() => likePicture(id)} className="btn btn-like">
             {icon}
         </button>
     );
 };
 
-const DeleteButton = ({ id, handleDelete }) => {
+const DeleteButton = ({ id, delPicture }) => {
     return (
-        <button onClick={() => handleDelete(id)} className="btn btn-delete">
+        <button onClick={() => delPicture(id)} className="btn btn-delete">
             <i class="bi bi-x-lg"></i>
         </button>
     );
 };
 
-const Item = ({ image, handleLike, handleDelete }) => {
+const Item = ({ image, likePicture, delPicture }) => {
     return (
         <div className="item">
             <img src={image.url} />
@@ -28,24 +28,24 @@ const Item = ({ image, handleLike, handleDelete }) => {
             <div className="actions">
                 <LikeButton
                     id={image.id}
-                    status={image.like}
-                    handleLike={handleLike}
+                    status={image.liked}
+                    likePicture={likePicture}
                 />
-                <DeleteButton id={image.id} handleDelete={handleDelete} />
+                <DeleteButton id={image.id} delPicture={delPicture} />
             </div>
         </div>
     );
 };
 
-const List = ({ images, handleLike, handleDelete }) => {
+const List = ({ images, likePicture, delPicture }) => {
     return (
         <div className="list">
             <div className="row">
                 {images.map((image, i) => (
                     <div key={i} className="col-3">
                         <Item
-                            handleLike={handleLike}
-                            handleDelete={handleDelete}
+                            likePicture={likePicture}
+                            delPicture={delPicture}
                             image={image}
                         />
                     </div>
@@ -55,33 +55,16 @@ const List = ({ images, handleLike, handleDelete }) => {
     );
 };
 
-const FilterItem = ({ active, label, onChange }) => {
+const FilterItem = ({ active, children, onChange }) => {
     return (
         <li class="nav-item">
             <a
                 class={"nav-link " + (active ? "active" : "")}
                 onClick={onChange}
             >
-                {label}
+                {children}
             </a>
         </li>
-    );
-};
-
-const Filter = ({ onChange, showFavourite }) => {
-    return (
-        <ul class="nav justify-content-end">
-            <FilterItem
-                active={!showFavourite}
-                onChange={() => onChange(false)}
-                label="All Pictures"
-            />
-            <FilterItem
-                active={showFavourite}
-                onChange={() => onChange(true)}
-                label="Favourites"
-            />
-        </ul>
     );
 };
 
@@ -91,13 +74,13 @@ class Form extends React.Component {
     };
 
     handleChange = (value) => {
-        this.setState({ url: value });
+        this.setState({ url: value.trim() });
     };
 
     handleSubmit = (e) => {
         e.preventDefault();
 
-        this.props.handleAddPicture(this.state.url);
+        this.props.onSubmit(this.state.url);
         this.setState({ url: "" });
         this.ref.focus();
     };
@@ -114,7 +97,7 @@ class Form extends React.Component {
                         ref={(node) => (this.ref = node)}
                     />
                     <button type="submit" class="btn btn-primary">
-                        Submit
+                        Add
                     </button>
                 </div>
             </form>
@@ -130,34 +113,34 @@ class App extends React.Component {
             {
                 id: 1,
                 url: "https://newsmd1fr.keeng.net/netnews/archive/images/2019122617/tinngan_052713_909620546_1.jpg",
-                like: false,
+                liked: false,
             },
             {
                 id: 2,
                 url: "https://image-us.24h.com.vn/upload/2-2021/images/2021-05-31/anh-4-1622435533-350-width650height813.jpg",
-                like: true,
+                liked: true,
             },
             {
                 id: 3,
                 url: "https://sohanews.sohacdn.com/2019/9/3/photo-1-15674713690051885929813.jpg",
-                like: false,
+                liked: false,
             },
             {
                 id: 4,
                 url: "https://kenh14cdn.com/203336854389633024/2021/5/7/photo-1-1620357519578885309410.jpg",
-                like: false,
+                liked: false,
             },
         ],
     };
 
-    handleLike = (id) => {
+    likePicture = (id) => {
         this.setState((prev) => {
             const images = [...prev.images];
 
             const item = images.findIndex((image) => image.id === id);
             const newImage = { ...images[item] };
 
-            newImage.like = !newImage.like;
+            newImage.liked = !newImage.liked;
             images.splice(item, 1, newImage);
 
             return {
@@ -167,7 +150,7 @@ class App extends React.Component {
         });
     };
 
-    handleDelete = (id) => {
+    delPicture = (id) => {
         this.setState((prev) => {
             const newImages = prev.images.filter((image) => image.id !== id);
 
@@ -178,7 +161,7 @@ class App extends React.Component {
         });
     };
 
-    handleShowFavoriteChange = (status) => {
+    showFavourite = (status) => {
         this.setState((prev) => {
             return {
                 ...prev,
@@ -187,7 +170,7 @@ class App extends React.Component {
         });
     };
 
-    handleAddPicture = (url) => {
+    addPicture = (url) => {
         if (!url.trim()) return;
 
         this.setState((prev) => {
@@ -209,8 +192,10 @@ class App extends React.Component {
     };
 
     render() {
-        const images = this.state.showFavourite
-            ? this.state.images.filter((image) => image.like)
+        const { showFavourite } = this.state;
+
+        const images = showFavourite
+            ? this.state.images.filter((image) => image.liked)
             : this.state.images;
 
         return (
@@ -226,24 +211,34 @@ class App extends React.Component {
 
                     <div className="row justify-content-center">
                         <div className="col-5">
-                            <Form handleAddPicture={this.handleAddPicture} />
+                            <Form onSubmit={this.addPicture} />
                         </div>
                     </div>
 
                     <div className="row justify-content-end">
                         <div className="col">
-                            <Filter
-                                showFavourite={this.state.showFavourite}
-                                onChange={this.handleShowFavoriteChange}
-                            />
+                            <ul className="nav justify-content-end">
+                                <FilterItem
+                                    active={!showFavourite}
+                                    onChange={() => this.showFavourite(false)}
+                                >
+                                    All Pictures
+                                </FilterItem>
+                                <FilterItem
+                                    active={showFavourite}
+                                    onChange={() => this.showFavourite(true)}
+                                >
+                                    Favourite
+                                </FilterItem>
+                            </ul>
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-12">
                             <List
-                                handleLike={this.handleLike}
-                                handleDelete={this.handleDelete}
+                                likePicture={this.likePicture}
+                                delPicture={this.delPicture}
                                 images={images}
                             />
                         </div>
