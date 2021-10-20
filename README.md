@@ -1,6 +1,10 @@
-# React Projects
+# React Examples
 
-💡 Sử dụng React Devtools với Safari hoặc React Native
+Các ví dụ hoặc project nhỏ sử dụng trong khóa học ReactJS
+
+# React Devtools trên Safari hoặc React Native
+
+💡 Nguồn: [https://www.npmjs.com/package/react-devtools](https://www.npmjs.com/package/react-devtools)
 
 Cài đặt `react-devtools`
 
@@ -14,7 +18,7 @@ Khởi động `react-devtools`
 react-devtools
 ```
 
-Thêm script kết nối tới React Devtools
+Thêm script kết nối tới React Devtools trong HTML
 
 ```html
 <head>
