@@ -106,27 +106,28 @@ class Form extends React.Component {
 }
 
 class App extends React.Component {
+    uid = () => Math.floor(Math.random() * 10000);
+
     state = {
-        id: 5,
         showFavourite: false,
         images: [
             {
-                id: 1,
+                id: this.uid(),
                 url: "https://newsmd1fr.keeng.net/netnews/archive/images/2019122617/tinngan_052713_909620546_1.jpg",
                 liked: false,
             },
             {
-                id: 2,
+                id: this.uid(),
                 url: "https://image-us.24h.com.vn/upload/2-2021/images/2021-05-31/anh-4-1622435533-350-width650height813.jpg",
                 liked: true,
             },
             {
-                id: 3,
+                id: this.uid(),
                 url: "https://sohanews.sohacdn.com/2019/9/3/photo-1-15674713690051885929813.jpg",
                 liked: false,
             },
             {
-                id: 4,
+                id: this.uid(),
                 url: "https://kenh14cdn.com/203336854389633024/2021/5/7/photo-1-1620357519578885309410.jpg",
                 liked: false,
             },
@@ -177,7 +178,7 @@ class App extends React.Component {
             const images = [
                 ...prev.images,
                 {
-                    id: prev.id,
+                    id: this.uid(),
                     url,
                     like: false,
                 },
@@ -185,7 +186,6 @@ class App extends React.Component {
 
             return {
                 ...prev,
-                id: prev.id + 1,
                 images,
             };
         });
