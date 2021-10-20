@@ -1,52 +1,101 @@
 const root = document.getElementById("root");
 
-const TodoItem = ({ id, title, handleChange }) => {
+const TodoItem = ({ id, title, updateTodo }) => {
     return (
         <li className="todo-item">
             {title}
-            <button onClick={() => handleChange(id)}>Done #{id}</button>
+            <button onClick={() => updateTodo(id)}>Done</button>
         </li>
     );
 };
 
-const TodoList = ({ todos, handleChange }) => {
+const TodoList = ({ todos, updateTodo }) => {
     const items = todos.map((todo) => (
         <TodoItem
             key={todo.id}
             id={todo.id}
             title={todo.title}
-            handleChange={handleChange}
+            updateTodo={updateTodo}
         />
     ));
 
     return <ul className="todo-list">{items}</ul>;
 };
 
+class TodoForm extends React.Component {
+    state = {
+        title: "",
+    };
+
+    handleChange = (title) => this.setState({ title });
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+
+        this.props.addTodo(this.state.title);
+        this.setState({ title: "" });
+        this.ref.focus();
+    };
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <input
+                    value={this.state.title}
+                    ref={(node) => (this.ref = node)}
+                    onChange={(e) => this.handleChange(this.ref.value)}
+                />
+                <button>Add</button>
+            </form>
+        );
+    }
+}
+
 class App extends React.Component {
+    uid = () => Math.floor(Math.random() * 10000);
+
     state = {
         todos: [
-            { id: 1, title: "Task #1" },
-            { id: 2, title: "Task #2" },
+            { id: this.uid(), title: "State" },
+            { id: this.uid(), title: "Props" },
+            { id: this.uid(), title: "Form" },
+            { id: this.uid(), title: "Ref" },
+            { id: this.uid(), title: "Event" },
         ],
     };
 
-    handleChange = (id) => {
-        this.setState((prevState) => {
-            let todos = prevState.todos.slice();
-            let newTodos = todos.filter((todo) => todo.id !== id);
+    updateTodo = (id) =>
+        this.setState((prev) => ({
+            todos: prev.todos.filter((todo) => todo.id !== id),
+        }));
 
-            return { todos: newTodos };
-        });
+    addTodo = (title) => {
+        const todos = [
+            ...this.state.todos,
+            {
+                id: this.uid(),
+                title,
+            },
+        ];
+
+        this.setState({ todos });
     };
 
     render() {
         return (
             <div>
-                <h1>Todo Lists</h1>
-                <TodoList
-                    todos={this.state.todos}
-                    handleChange={this.handleChange}
-                />
+                <h1>TodoApp</h1>
+
+                <TodoForm addTodo={this.addTodo} />
+
+                {this.state.todos.length > 0 ? (
+                    <TodoList
+                        todos={this.state.todos}
+                        updateTodo={this.updateTodo}
+                    />
+                ) : (
+                    <p>No todo, add one</p>
+                )}
             </div>
         );
     }
