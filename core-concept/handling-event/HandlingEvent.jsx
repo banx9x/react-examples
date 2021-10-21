@@ -33,6 +33,10 @@ class App extends React.Component {
 
     countDown = () => this.setState((prev) => ({ count: prev.count - 10 }));
 
+    passParams = (e, ...params) => {
+        console.log(params);
+    };
+
     render() {
         const { couting, count } = this.state;
 
@@ -47,6 +51,14 @@ class App extends React.Component {
                 {/* Khác biệt về tên, sử dụng cú pháp camelCase */}
                 <button onClick={this.handleCount}>
                     {couting ? "Stop" : "Start"}
+                </button>
+
+                {/* Event object tương tự DOM */}
+                <button onClick={(e) => console.log(e)}>Click me!</button>
+
+                {/* Truyền thêm tham số cho handler */}
+                <button onClick={(e) => this.passParams(e, count)}>
+                    Click em đi!
                 </button>
 
                 {/* Pass update function to child component */}
