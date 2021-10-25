@@ -62,7 +62,7 @@ class ControlledWithValidate extends React.Component {
 
         if (this.state.username && !this.state.error)
             alert(`Hello, ${this.state.username}!`);
-        else this.ref.focus();
+        else this.username.focus();
     };
 
     render() {
@@ -86,7 +86,7 @@ class ControlledWithValidate extends React.Component {
                             placeholder="Enter your username"
                             name="username"
                             value={this.state.username}
-                            ref={(el) => (this.ref = el)}
+                            ref={(inputNode) => (this.username = inputNode)}
                         />
                         <button>Submit</button>
                     </div>
@@ -102,8 +102,8 @@ class UncontrolledForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
-        let firstName = this.firstName.value;
-        let lastName = this.lastName.value;
+        let firstName = this.firstNameNode.value;
+        let lastName = this.lastNameNode.value;
 
         alert(`Welcome, ${firstName} ${lastName}!`);
     };
@@ -118,14 +118,18 @@ class UncontrolledForm extends React.Component {
                         type="text"
                         placeholder="Your Firstname"
                         name="firstName"
-                        ref={(el) => (this.firstName = el)}
+                        ref={(firstNameNode) =>
+                            (this.firstNameNode = firstNameNode)
+                        }
                     />
 
                     <input
                         type="text"
                         placeholder="Your Lastname"
                         name="lastName"
-                        ref={(el) => (this.lastName = el)}
+                        ref={(lastNameNode) =>
+                            (this.lastNameNode = lastNameNode)
+                        }
                     />
 
                     <button>Submit</button>

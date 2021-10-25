@@ -10,7 +10,9 @@ const Product = ({
             </div>
             <div className="product-description">
                 <p className="product-category">{category}</p>
-                <h2 className="product-name">{title}</h2>
+                <h2 className="product-name">
+                    <a href={"detail.html?id=" + id}>{title}</a>
+                </h2>
                 <p className="product-price">{price}</p>
             </div>
         </div>
