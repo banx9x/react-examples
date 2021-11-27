@@ -84,7 +84,7 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <h1>TodoApp</h1>
+                <h1>Simple TodoApp</h1>
 
                 <TodoForm addTodo={this.addTodo} />
 
@@ -94,7 +94,7 @@ class App extends React.Component {
                         updateTodo={this.updateTodo}
                     />
                 ) : (
-                    <p>No todo, add one</p>
+                    <p>Empty, add one :)</p>
                 )}
             </div>
         );

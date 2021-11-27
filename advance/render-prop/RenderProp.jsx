@@ -48,7 +48,10 @@ const App = () => {
         <div>
             <Parent>{() => <h1>Demo render props</h1>}</Parent>
 
-            <Mouse>{(mouse) => <Cat mouse={mouse} />}</Mouse>
+            <Mouse>
+                // prop.children
+                {(mouse) => <Cat mouse={mouse} />}
+            </Mouse>
         </div>
     );
 };

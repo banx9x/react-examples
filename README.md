@@ -1,28 +1,28 @@
 # React Examples
 
-Các ví dụ hoặc project nhỏ sử dụng trong khóa học ReactJS
+Mini projects used for ReactJS Cource
 
-# React Devtools trên Safari hoặc React Native
+## React Devtools for Safari/React Native
 
-💡 Nguồn: [https://www.npmjs.com/package/react-devtools](https://www.npmjs.com/package/react-devtools)
+💡 Source: [https://www.npmjs.com/package/react-devtools](https://www.npmjs.com/package/react-devtools)
 
-Cài đặt `react-devtools`
+Install `react-devtools`
 
 ```
 npm i -g react-devtools
 ```
 
-Khởi động `react-devtools`
+Run `react-devtools`
 
 ```
 react-devtools
 ```
 
-Thêm script kết nối tới React Devtools trong HTML
+Add script to connect with React Devtools
 
 ```html
 <head>
-    <!-- XÓA SCRIPT KHI BUILD PRODUCTION -->
+    <!-- REMOVE SCRIPT WHEN BUILD PRODUCTION -->
     <script src="http://localhost:8097"></script>
 </head>
 ```
